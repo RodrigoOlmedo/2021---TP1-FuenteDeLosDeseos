@@ -21,13 +21,7 @@ data Persona = UnaPersona{
 ,   habilidades :: [String]
 }deriving (Show,Eq)
 
-pepe = UnaPersona{
-    edad = 23
-,   suenios = [recibirse "medicina", viajar ["tailandia"]]
-,   nombre = "Fransisca"
-,   felicidonios = 45
-,   habilidades = []
-}
+
 -- 1 a 
 
 esMuyFeliz :: Persona -> Bool
@@ -112,8 +106,8 @@ enamorarse personaY  = (agregarFelicidonios (felicidonios personaY))
 
 -- 3 PARTE B
 
-queTodoSiguaIgual :: Suenio
-queTodoSiguaIgual = id--no cambia
+queTodoSigaIgual :: Suenio
+queTodoSigaIgual = id--no cambia
 
 packMedicina :: Suenio
 packMedicina = bonus.viajeMedicinal.esMedico --composicion
@@ -130,19 +124,108 @@ bonus = agregarFelicidonios 100
 triple :: Suenio -> Suenio 
 triple suenio = suenio.suenio.suenio
 
+------------------------------ 2DA ENTREGA --GERMAN Fijate que te modifique algunas boludeces en el codigo, estan comentadas como MODIFICADO
+
+--4a
 fuenteMinimalista :: Fuente
-fuenteMinimalista persona = sacarPrimerSuenio ((enesimoSuenio 0 persona) persona)
+fuenteMinimalista persona = sacarPrimerSuenio (cumplirUnSuenio (enesimoSuenio persona 0) persona)
 
 --primerSuenio persona = head suenios persona
 --cumplirSuenio suenio = suenio QUIERO USAR COMPOSICION EN FUENTEMINIMALISTA Y NO SE COMO :(
 
-enesimoSuenio :: Number->Persona -> Suenio
-enesimoSuenio numero persona = (!!) (suenios persona) numero
+enesimoSuenio :: Persona->Number-> Suenio
+enesimoSuenio persona = (!!) (suenios persona)
 
 sacarPrimerSuenio :: Persona->Persona
 sacarPrimerSuenio persona = persona{suenios = tail (suenios persona)}
 
-fuenteSorda :: Fuente
-fuenteSorda = queTodoSiguaIgual
+--4b
+fuenteCopada :: Fuente
+fuenteCopada = borrarSuenios.cumplirTodosLosSuenios
 
-fuenteGanadoraSegun :: (Persona->Number)->
+cumplirUnSuenio :: Suenio -> Persona -> Persona
+cumplirUnSuenio suenio = suenio
+
+cumplirTodosLosSuenios :: Persona -> Persona
+cumplirTodosLosSuenios persona = foldl (flip (cumplirUnSuenio)) persona (suenios persona)
+
+borrarSuenios :: Persona -> Persona
+borrarSuenios persona = persona {suenios = []}
+
+--4c
+fuenteAPedido :: Number -> Fuente
+fuenteAPedido numero persona = cumplirUnSuenio (enesimoSuenio persona numero) persona
+
+--4d
+fuenteSorda :: Fuente
+fuenteSorda = queTodoSigaIgual
+-----
+
+--5
+fuenteGanadoraSegun :: (Persona->Number)->Persona->[Fuente]->Fuente
+fuenteGanadoraSegun indice persona = foldl1 (mejorFuenteSegun indice persona) --hago aplicacion parcial con el indice y la persona
+
+mejorFuenteSegun :: (Persona->Number)->Persona->Fuente->Fuente->Fuente
+mejorFuenteSegun indice persona fuente1 fuente2 | indice (fuente1 persona)>indice (fuente2 persona) = fuente1
+                                                | otherwise = fuente2
+--5.1
+fuenteMasSatisfactoria :: Persona -> [Fuente] -> Fuente
+fuenteMasSatisfactoria persona = fuenteGanadoraSegun coeficienteDeSatisfaccion persona
+
+--5.2
+fuenteMasEnvejecedora :: Persona -> [Fuente] -> Fuente
+fuenteMasEnvejecedora persona = fuenteGanadoraSegun edad persona
+
+--5.3
+fuenteQueMasHabilidadesDa :: Persona -> [Fuente] -> Fuente
+fuenteQueMasHabilidadesDa persona = fuenteGanadoraSegun (length.habilidades) persona
+
+---------------------------
+-- 6 Int1
+sueniosValiosos :: Persona -> [Suenio]
+sueniosValiosos persona = filter (esSuenioValioso persona) (suenios persona)
+
+esSuenioValioso :: Persona -> Suenio ->Bool
+esSuenioValioso persona suenio = esMuyFeliz (suenio persona)
+
+--6 Int2
+--Saber si algún sueño de una persona es raro: Lo deja con la misma cantidad de felicidonios tras cumplirlo.
+tieneSuenioRaro :: Persona -> Bool
+tieneSuenioRaro persona = any (esSuenioRaro persona) (suenios persona) --MODIFICADO
+
+esSuenioRaro:: Persona -> Suenio -> Bool 
+esSuenioRaro persona suenio = felicidonios persona == felicidonios (suenio persona)
+
+--6Int3
+--Dada una lista de personas, poder conocer la felicidad total de ese grupo si cumplen todos sus sueños.
+felicidadDeGrupo :: [Persona]->Number
+felicidadDeGrupo = sum.(map felicidonios).(map cumplirTodosLosSuenios)
+
+--6 Todo el grupo
+--Saber cuántas veces debe cumplir un sueño una persona para que quede con más de 1000 felicidonios.
+--A Chequear que esto este bien
+
+vecesACumplirSuenioParaTenerMasDeMilFelicidonios :: Persona->Suenio->Number
+vecesACumplirSuenioParaTenerMasDeMilFelicidonios persona = (cuentaSueniosSegun ((>1000).felicidonios) 0 persona) 
+--Rompe con que todo siga igual porque no suma felicidonios
+
+cuentaSueniosSegun :: (Persona->Bool)->Number->Persona ->Suenio -> Number -- primera guarda: esSuenioRaro persona suenio = error "No suben felicidonios"
+cuentaSueniosSegun condicion numero persona suenio  | condicion persona = numero  
+                                                    | otherwise = cuentaSueniosSegun condicion (numero+1) (suenio persona) suenio 
+
+--7
+
+soniador = UnaPersona{
+    edad = 23
+,   suenios = repeat (recibirse "medicina")
+,   nombre = "Fransisca"
+,   felicidonios = 45
+,   habilidades = []
+}
+
+--Es posible que la fuente pueda utilizarse con una persona que tiene infinitos sueños? Justifique su respuesta 
+
+--Integrante1 
+--Es posible. Si bien soniador es una persona con infinitos sueños al aplicar la Fuente minimalista con esta persona, la misma solo se enfoca 
+--en el primer sueño de su lista de sueños, dejando sin importancia el resto. Esto se debe a que Haskell evalua mediante "lazy evaluation"
+-- lo cual es un metodo de evaluacion que permite no realizar calculos de expresiones que sean innecesarios. 
