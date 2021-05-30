@@ -7,7 +7,7 @@ import Test.Hspec
 persona0 = UnaPersona{
     edad = 23
 ,   suenios = [recibirse "medicina", viajar ["tailandia"],queTodoSigaIgual]
-,   nombre = "Fransisca"
+,   nombre = "Francisca"
 ,   felicidonios = 45
 ,   habilidades = []
 }
@@ -91,15 +91,15 @@ correrTests = hspec $ do
 
   describe "Fuente Minimalista" $ do 
     it "La fuente minimalista debe cumplir el primer sueño de la persona y borrarlo" $ do
-      show (fuenteMinimalista persona0) `shouldBe` show (UnaPersona 23 [viajar ["tailandia"],queTodoSigaIgual] "Fransisca" 8045 ["medicina"])
+      show (fuenteMinimalista persona0) `shouldBe` show (UnaPersona 23 [viajar ["tailandia"],queTodoSigaIgual] "Francisca" 8045 ["medicina"])
 
   describe "Fuente Copada" $ do 
     it "La fuente copada debe cumplir todos los sueños de la persona y borrarlos de su lista de sueños" $ do
-      show (fuenteCopada persona0) `shouldBe` show (UnaPersona 24 [] "Fransisca" 8145 ["medicina"])
+      show (fuenteCopada persona0) `shouldBe` show (UnaPersona 24 [] "Francisca" 8145 ["medicina"])
 
   describe "Fuente A Pedido" $ do 
     it "La fuente a pedido debe cumplir el enesimo sueño de la persona" $ do
-      show (fuenteAPedido 1 persona0) `shouldBe` show (UnaPersona 24 [recibirse "medicina", viajar ["tailandia"],queTodoSigaIgual] "Fransisca" 145 [])
+      show (fuenteAPedido 1 persona0) `shouldBe` show (UnaPersona 24 [recibirse "medicina", viajar ["tailandia"],queTodoSigaIgual] "Francisca" 145 [])
 
   describe "Fuente Sorda" $ do 
     it "La fuente Sorda debe cumplir el enesimo sueño de la persona" $ do
@@ -111,7 +111,7 @@ correrTests = hspec $ do
           show ((fuenteMasSatisfactoria persona1 [fuenteSorda, fuenteCopada]) persona1) `shouldBe` show (UnaPersona 20 [] "Maximiliano" 9011 ["Radiologo"])
 
     it "Dado un conjunto de fuentes y una persona, la fuente mas envejecedora será aquella que mas edad sume a la persona" $ do
-          show ((fuenteMasEnvejecedora persona0 [fuenteSorda, fuenteMinimalista, (fuenteAPedido 1)]) persona0) `shouldBe` show (UnaPersona 24 [recibirse "medicina", viajar ["tailandia"],queTodoSigaIgual] "Fransisca" 145 [])
+          show ((fuenteMasEnvejecedora persona0 [fuenteSorda, fuenteMinimalista, (fuenteAPedido 1)]) persona0) `shouldBe` show (UnaPersona 24 [recibirse "medicina", viajar ["tailandia"],queTodoSigaIgual] "Francisca" 145 [])
 
     it "Dado un conjunto de fuentes y una persona, la fuente que mas habilidades da será aquella que deje a la persona con mayor cantidad de habilidades" $ do
           show ((fuenteQueMasHabilidadesDa persona1 [fuenteSorda, fuenteCopada]) persona1) `shouldBe` show (UnaPersona 20 [] "Maximiliano" 9011 ["Radiologo"])

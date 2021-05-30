@@ -233,7 +233,7 @@ cuentaSueniosSegun condicion numero persona suenio  | condicion persona = numero
 soniador = UnaPersona{
     edad = 23
 ,   suenios = repeat (recibirse "medicina")
-,   nombre = "Fransisca"
+,   nombre = "Francisca"
 ,   felicidonios = 45
 ,   habilidades = []
 }
@@ -246,8 +246,8 @@ soniador = UnaPersona{
 -- lo cual es un metodo de evaluacion que permite no realizar calculos de expresiones que sean innecesarios.
 
 --Integrante2. 
---No es posible. Dado que la persona tiene una lista de sueños infinitos al aplicar la fuenteCopada, se quedaría aplicando la 
---función "cumplirTodosLosSuenios" a la lista. 
+--No es posible. Dado que la persona tiene una lista de sueños infinitos, y al aplicar la fuenteCopada se quedaría aplicando la 
+--función "cumplirTodosLosSuenios" a la lista y no terminaría nunca. 
 
 --Integrante3
 --Es posible. Ya que a pesar de que soniador es una persona con infinitos sueños, al aplicar la Fuente a pedido, la misma solo se enfoca  
